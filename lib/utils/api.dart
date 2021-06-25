@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:meubitcoin/models/Coin.dart';
+import 'package:meubitcoin/models/Trade.dart';
 
 class Api {
   Api._privateConstructor();
@@ -67,14 +68,29 @@ class Api {
     "BRLYFI",
     "BRLZRX"
   ];
-  String urlBase = "https://cdn.mercadobitcoin.com.br/api";
-  Future<Response> getTicker([String? coin = null]) async {
+
+  Future<List<Ticker>> getTicker([String? coin = null]) async {
+    String urlBase = "https://cdn.mercadobitcoin.com.br/api";
     List<String> tmpCoins = coins.toList();
     if (coin != null)
       tmpCoins = tmpCoins
           .where((e) => "$coin".toLowerCase() == e.toLowerCase())
           .toList();
-    return get(Uri.parse("$urlBase/tickers?pairs=" + tmpCoins.join(",")));
+    Response resp =
+        await get(Uri.parse("$urlBase/tickers?pairs=" + tmpCoins.join(",")));
+    if (resp.statusCode != 200) throw Exception("Something went wrong.");
+
+    return coinFromJson(resp.body).ticker;
+  }
+
+  Future<List<Trade>> getTrade(String coin) async {
+    String url = "https://www.mercadobitcoin.net/api/$coin/trades/";
+    var resp = await get(Uri.parse(url));
+    if (resp.statusCode != 200) throw Exception("Something went wrong.");
+    List<Trade> trades = (jsonDecode(resp.body) as List<dynamic>)
+        .map((e) => Trade.fromJson(e))
+        .toList();
+    return trades;
   }
 
   Future<bool> hasConnection() async {

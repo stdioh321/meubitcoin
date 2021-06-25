@@ -45,4 +45,18 @@ class Util {
       tec.dispose();
     } catch (e) {}
   }
+
+  Image imgOrPlaceholder(String pathImg, double? width, String pathPlaceholder,
+      double? widthPlaceholder) {
+    return Image.asset(
+      pathImg,
+      fit: BoxFit.contain,
+      width: width ?? 24,
+      errorBuilder:
+          (BuildContext context, Object exception, StackTrace? stackTrace) {
+        return Image.asset(pathPlaceholder,
+            fit: BoxFit.contain, width: widthPlaceholder ?? 24);
+      },
+    );
+  }
 }

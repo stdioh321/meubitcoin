@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:meubitcoin/models/Coin.dart';
+import 'package:meubitcoin/models/Trade.dart';
 import 'package:meubitcoin/utils/api.dart';
 import 'package:meubitcoin/utils/loading.dart';
+import 'package:meubitcoin/utils/util.dart';
 import 'package:meubitcoin/views/home.dart';
 
 class TickerDetail extends StatefulWidget {
   String pair;
+
   TickerDetail({Key? key, required this.pair}) : super(key: key);
 
   @override
@@ -18,6 +21,7 @@ class TickerDetail extends StatefulWidget {
 
 class _TickerDetailState extends State<TickerDetail> {
   Ticker? ticker = null;
+
   Status status = Status.none;
   final f = DateFormat('dd/MM/yyyy HH:mm:ss');
   Timer? timer;
@@ -25,6 +29,7 @@ class _TickerDetailState extends State<TickerDetail> {
   @override
   void initState() {
     // TODO: implement initState
+
     loadTicker().then((value) {
       timer = Timer.periodic(Duration(seconds: 3), (timer) async {
         try {
@@ -42,11 +47,11 @@ class _TickerDetailState extends State<TickerDetail> {
     try {
       timer?.cancel();
     } catch (e) {}
+    super.dispose();
   }
 
   Future getTicker() async {
-    Response resp = await Api.instance.getTicker(widget.pair);
-    ticker = coinFromJson(resp.body).ticker.first;
+    ticker = (await Api.instance.getTicker(widget.pair)).first;
   }
 
   Future loadTicker() async {
@@ -98,9 +103,23 @@ class _TickerDetailState extends State<TickerDetail> {
           padding: EdgeInsets.all(15),
           child: Column(
             children: [
-              Text(
-                widget.pair.substring(3),
-                style: TextStyle(fontSize: 30),
+              Row(
+                children: [
+                  Util.instance.imgOrPlaceholder(
+                      "assets/images/coin_image/" +
+                          widget.pair.substring(3) +
+                          ".png",
+                      50,
+                      "assets/images/coin_image/placeholder.png",
+                      50),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text(
+                    widget.pair.substring(3),
+                    style: TextStyle(fontSize: 30),
+                  ),
+                ],
               ),
               Divider(),
               Row(
@@ -151,7 +170,7 @@ class _TickerDetailState extends State<TickerDetail> {
                   f.format(
                       DateTime.fromMillisecondsSinceEpoch(ticker!.date * 1000)),
                 ),
-              )
+              ),
             ],
           ),
         ),

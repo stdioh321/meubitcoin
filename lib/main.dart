@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:meubitcoin/services/notification_service.dart';
 import 'package:meubitcoin/utils/util.dart';
 import 'package:meubitcoin/views/home.dart';
 import 'package:meubitcoin/views/ticker-detail.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await NotificationService().init();
+  } catch (e) {
+    print(e.toString());
+  }
   runApp(MyApp());
 }
 

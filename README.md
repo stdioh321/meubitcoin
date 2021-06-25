@@ -1,5 +1,5 @@
-# meubitcoin
-App using the api from https://mercadobitcoin.com.br/
+# MeuBitcoin
+App that list the coins from **mercadobitcoin** and show your details, using the api from https://mercadobitcoin.com.br/
 
 
 # Requirements

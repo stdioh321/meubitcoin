@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:meubitcoin/services/notification_service.dart';
 import 'package:meubitcoin/utils/util.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +23,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<Ticker> _tickers = [];
   List<Ticker> tickers = [];
-  List<Ticker> _oldTickers = [];
   Status status = Status.none;
   Timer? timer;
   int time = 5;
@@ -36,6 +39,7 @@ class _HomeState extends State<Home> {
   void dispose() {
     // TODO: implement dispose
     timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -60,9 +64,7 @@ class _HomeState extends State<Home> {
   }
 
   Future getTickers() async {
-    var response = await Api.instance.getTicker();
-    if (_tickers.length > 0) _oldTickers = _tickers.toList();
-    _tickers = coinFromJson(response.body).ticker;
+    _tickers = await Api.instance.getTicker();
     tickers = _tickers.toList();
   }
 
@@ -179,7 +181,20 @@ class _HomeState extends State<Home> {
                     title: Text("${e.pair}".substring(3)),
                     leading: Wrap(
                       children: [
-                        Icon(Icons.attach_money),
+                        Image.asset(
+                          "assets/images/coin_image/" +
+                              e.pair.substring(3) +
+                              ".png",
+                          fit: BoxFit.contain,
+                          width: 40,
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace? stackTrace) {
+                            return Image.asset(
+                                "assets/images/coin_image/placeholder.png",
+                                fit: BoxFit.contain,
+                                width: 40);
+                          },
+                        )
                       ],
                     ),
                     trailing: Wrap(
