@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:meubitcoin/utils/util.dart';
 import 'package:flutter/material.dart';
 
 import 'package:meubitcoin/models/Coin.dart';
 import 'package:meubitcoin/utils/api.dart';
 import 'package:meubitcoin/utils/loading.dart';
-import 'package:meubitcoin/utils/util.dart';
 import 'package:meubitcoin/views/ticker-detail.dart';
 import 'package:simple_search_bar/simple_search_bar.dart';
 
@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     // TODO: implement dispose
-    timer!.cancel();
+    timer?.cancel();
   }
 
   @override
@@ -51,7 +51,7 @@ class _HomeState extends State<Home> {
         try {
           if (appBarController.state || status == Status.error)
             throw Exception("Not now.");
-          print(timer.tick);
+          // print(timer.tick);
           await getTickers();
           setState(() {});
         } catch (e) {}
@@ -192,6 +192,8 @@ class _HomeState extends State<Home> {
                       ],
                     ),
                     onTap: () async {
+                      Util.instance.removeFocus(context);
+
                       await Navigator.push(
                           context,
                           MaterialPageRoute(

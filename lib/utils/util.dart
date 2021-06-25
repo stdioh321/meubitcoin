@@ -36,4 +36,13 @@ class Util {
     };
     return MaterialColor(c.value, mapColors);
   }
+
+  void removeFocus([BuildContext? context]) {
+    try {
+      FocusScope.of(context!).unfocus();
+      var tec = TextEditingController();
+      tec.clear();
+      tec.dispose();
+    } catch (e) {}
+  }
 }
