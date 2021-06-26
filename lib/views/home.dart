@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meubitcoin/services/notification_service.dart';
 import 'package:meubitcoin/utils/util.dart';
 import 'package:flutter/material.dart';

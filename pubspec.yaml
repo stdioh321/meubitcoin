@@ -32,7 +32,6 @@ dependencies:
   simple_search_bar: ^0.1.7
   intl: ^0.17.0
   flutter_local_notifications: ^5.0.0+1
-  flutter_svg: ^0.19.3
 
 dev_dependencies:
   flutter_test:
