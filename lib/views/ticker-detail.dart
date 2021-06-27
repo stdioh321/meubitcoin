@@ -125,42 +125,42 @@ class _TickerDetailState extends State<TickerDetail> {
               Row(
                 children: [
                   Expanded(child: Text("Compra")),
-                  Text("R\$ ${ticker?.buy}")
+                  Text(Util.instance.toReal(ticker?.buy))
                 ],
               ),
               Divider(),
               Row(
                 children: [
                   Expanded(child: Text("Venda")),
-                  Text("R\$ ${ticker?.sell}")
+                  Text(Util.instance.toReal(ticker?.sell))
                 ],
               ),
               Divider(),
               Row(
                 children: [
                   Expanded(child: Text("Último")),
-                  Text("R\$ ${ticker?.last}")
+                  Text(Util.instance.toReal(ticker?.last))
                 ],
               ),
               Divider(),
               Row(
                 children: [
                   Expanded(child: Text("Maior")),
-                  Text("R\$ ${ticker?.high}")
+                  Text(Util.instance.toReal(ticker?.high))
                 ],
               ),
               Divider(),
               Row(
                 children: [
                   Expanded(child: Text("Menor")),
-                  Text("R\$ ${ticker?.low}")
+                  Text(Util.instance.toReal(ticker?.low))
                 ],
               ),
               Divider(),
               Row(
                 children: [
                   Expanded(child: Text("Volume")),
-                  Text("R\$ ${ticker?.vol}")
+                  Text(Util.instance.toReal(ticker?.vol))
                 ],
               ),
               Divider(),

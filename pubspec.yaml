@@ -32,6 +32,11 @@ dependencies:
   simple_search_bar: ^0.1.7
   intl: ^0.17.0
   flutter_local_notifications: ^5.0.0+1
+  get: ^4.1.4
+  shared_preferences: ^2.0.6
+  hive: ^1.4.4+1
+  path_provider: ^2.0.2
+  sqflite: ^2.0.0+3
 
 dev_dependencies:
   flutter_test:

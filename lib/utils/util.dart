@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:meubitcoin/models/Coin.dart';
 
 class Util {
@@ -18,6 +19,17 @@ class Util {
       return (await InternetAddress.lookup("www.google.com")).isNotEmpty;
     } catch (e) {
       return false;
+    }
+  }
+
+  NumberFormat real =
+      NumberFormat.currency(locale: 'pt_BR', name: "R\$", decimalDigits: 5);
+  String toReal([dynamic val]) {
+    try {
+      if (val.runtimeType == String) return real.format(double.parse(val));
+      return real.format(val);
+    } catch (e) {
+      return val;
     }
   }
 
