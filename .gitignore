@@ -1,4 +1,8 @@
+.vscode/
 sign/
+android/app/google-services.json
+
+
 # Miscellaneous
 *.class
 *.log

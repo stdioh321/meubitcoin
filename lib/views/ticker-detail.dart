@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:meubitcoin/models/Coin.dart';
@@ -25,7 +26,8 @@ class _TickerDetailState extends State<TickerDetail> {
   Status status = Status.none;
   final f = DateFormat('dd/MM/yyyy HH:mm:ss');
   Timer? timer;
-
+  TextEditingController _textEditionController = TextEditingController()
+    ..text = "0.00";
   @override
   void initState() {
     // TODO: implement initState
@@ -33,7 +35,6 @@ class _TickerDetailState extends State<TickerDetail> {
     loadTicker().then((value) {
       timer = Timer.periodic(Duration(seconds: 3), (timer) async {
         try {
-          print("Timer: ${timer.tick}");
           await getTicker();
           setState(() {});
         } catch (e) {}
@@ -121,6 +122,14 @@ class _TickerDetailState extends State<TickerDetail> {
                   ),
                 ],
               ),
+              SizedBox(),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  f.format(
+                      DateTime.fromMillisecondsSinceEpoch(ticker!.date * 1000)),
+                ),
+              ),
               Divider(),
               Row(
                 children: [
@@ -164,13 +173,76 @@ class _TickerDetailState extends State<TickerDetail> {
                 ],
               ),
               Divider(),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  f.format(
-                      DateTime.fromMillisecondsSinceEpoch(ticker!.date * 1000)),
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _textEditionController,
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) {
+                        _textEditionController.text = _textEditionController
+                            .text
+                            .replaceAll(RegExp(r"\D"), "");
+
+                        _textEditionController.text =
+                            int.parse(_textEditionController.text).toString();
+
+                        if (_textEditionController.text.length <= 2)
+                          _textEditionController.text =
+                              _textEditionController.text.padLeft(3, "0");
+
+                        if (_textEditionController.text.length > 2)
+                          _textEditionController
+                              .text = _textEditionController.text.substring(
+                                  0, _textEditionController.text.length - 2) +
+                              "." +
+                              _textEditionController.text.substring(
+                                  _textEditionController.text.length - 2);
+
+                        _textEditionController.selection =
+                            TextSelection.collapsed(
+                                offset: _textEditionController.text.length);
+                        setState(() {});
+                      },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[0-9\.]")),
+                      ],
+                      decoration: InputDecoration(
+                        labelText: widget.pair.substring(3),
+                        prefixIcon: Icon(Icons.attach_money_outlined),
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              (_textEditionController.text.isEmpty)
+                  ? SizedBox()
+                  : Container(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.swap_vertical_circle),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            _convertCoin(
+                              _textEditionController.text,
+                              ticker!.buy,
+                            ),
+                            style: TextStyle(
+                              fontSize: 22,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
             ],
           ),
         ),
@@ -179,5 +251,9 @@ class _TickerDetailState extends State<TickerDetail> {
       return Center(
         child: Text("Algo deu errado."),
       );
+  }
+
+  String _convertCoin(String money, String coin) {
+    return (double.parse(money) / double.parse(coin)).toString();
   }
 }

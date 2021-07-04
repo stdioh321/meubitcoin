@@ -11,12 +11,12 @@ String contatoToJson(Contato data) => json.encode(data.toJson());
 
 class Contato {
   Contato({
-    required this.id,
+    this.id,
     required this.nome,
     required this.idade,
   });
 
-  int id;
+  int? id;
   String nome;
   int idade;
 

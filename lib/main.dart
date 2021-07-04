@@ -1,17 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/instance_manager.dart';
-import 'package:get/route_manager.dart';
-import 'package:meubitcoin/services/notification_service.dart';
+import 'package:meubitcoin/utils/util.dart';
 import 'package:meubitcoin/views/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await NotificationService().init();
-  } catch (e) {
-    print(e.toString());
-  }
   runApp(MyApp());
 }
 
@@ -23,15 +17,20 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  MaterialApp materialApp = MaterialApp(
+    title: 'MeuBitcoin',
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      primarySwatch: Colors.green,
+    ),
+    home: Home(),
+  );
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MeuBitcoin',
-      debugShowCheckedModeBanner: false,
-      darkTheme: ThemeData(brightness: Brightness.dark),
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Home(),
-    );
+    return materialApp;
   }
 }
