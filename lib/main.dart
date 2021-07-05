@@ -1,11 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:meubitcoin/utils/util.dart';
+import 'package:meubitcoin/services/firebase_notification_service.dart';
 import 'package:meubitcoin/views/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Firebase Setup BEGIN
+  await Firebase.initializeApp();
+
+  // FirebaseMessaging.onBackgroundMessage(
+  //     FirebaseNotificaitonService.onBackgroundMessage);
+  await FirebaseNotificaitonService.instance.init();
+// Firebase Setup END
   runApp(MyApp());
 }
 

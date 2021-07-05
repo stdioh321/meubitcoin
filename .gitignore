@@ -1,6 +1,11 @@
+# CUSTOM BEGIN
 .vscode/
 sign/
-android/app/google-services.json
+google-services.json
+
+# CUSTOM END
+
+
 
 
 # Miscellaneous

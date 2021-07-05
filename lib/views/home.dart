@@ -1,7 +1,11 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:meubitcoin/main.dart';
+import 'package:meubitcoin/models/fcm.dart';
+import 'package:meubitcoin/repositories/fcm_repository.dart';
+import 'package:meubitcoin/services/firebase_notification_service.dart';
 import 'package:meubitcoin/utils/util.dart';
 import 'package:flutter/material.dart';
 
@@ -24,10 +28,8 @@ class _HomeState extends State<Home> {
   Timer? timer;
   int time = 5;
 
-  late FloatingSearchBarController _floatingSearchBarController;
-  _HomeState() {
-    _floatingSearchBarController = FloatingSearchBarController();
-  }
+  FloatingSearchBarController _floatingSearchBarController =
+      FloatingSearchBarController();
 
   @override
   void initState() {

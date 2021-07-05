@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:meubitcoin/models/Coin.dart';
 import 'package:meubitcoin/models/Trade.dart';
+import 'package:meubitcoin/models/fcm.dart';
 import 'package:meubitcoin/utils/api.dart';
 import 'package:meubitcoin/utils/loading.dart';
 import 'package:meubitcoin/utils/util.dart';
@@ -28,6 +29,9 @@ class _TickerDetailState extends State<TickerDetail> {
   Timer? timer;
   TextEditingController _textEditionController = TextEditingController()
     ..text = "0.00";
+
+  List<Fcm> fcms = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -242,7 +246,40 @@ class _TickerDetailState extends State<TickerDetail> {
                           )
                         ],
                       ),
-                    )
+                    ),
+              Divider(),
+              Container(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  width: 200,
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text("Text"),
+                              actions: [
+                                IconButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    icon: Icon(
+                                      Icons.keyboard_return_sharp,
+                                    ))
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.add),
+                          Text("Adicionar Notificação"),
+                        ],
+                      )),
+                ),
+              )
             ],
           ),
         ),
