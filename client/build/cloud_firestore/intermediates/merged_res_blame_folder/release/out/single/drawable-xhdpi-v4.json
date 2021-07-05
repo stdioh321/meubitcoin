@@ -1,0 +1,50 @@
+[
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/common_google_signin_btn_text_dark_normal_background.9.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable-xhdpi-v4/common_google_signin_btn_text_dark_normal_background.9.png"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/common_google_signin_btn_icon_dark_normal_background.9.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable-xhdpi-v4/common_google_signin_btn_icon_dark_normal_background.9.png"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/common_full_open_on_phone.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable-xhdpi-v4/common_full_open_on_phone.png"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/notification_bg_normal_pressed.9.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/drawable-xhdpi-v4/notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/googleg_disabled_color_18.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable-xhdpi-v4/googleg_disabled_color_18.png"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/notify_panel_notification_icon_bg.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/drawable-xhdpi-v4/notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/notification_bg_low_normal.9.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/drawable-xhdpi-v4/notification_bg_low_normal.9.png"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/common_google_signin_btn_icon_light_normal_background.9.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable-xhdpi-v4/common_google_signin_btn_icon_light_normal_background.9.png"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/notification_bg_low_pressed.9.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/drawable-xhdpi-v4/notification_bg_low_pressed.9.png"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/notification_bg_normal.9.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/drawable-xhdpi-v4/notification_bg_normal.9.png"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/common_google_signin_btn_text_light_normal_background.9.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable-xhdpi-v4/common_google_signin_btn_text_light_normal_background.9.png"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable-xhdpi-v4/googleg_standard_color_18.png",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable-xhdpi-v4/googleg_standard_color_18.png"
+    }
+]

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">634993843953-3pjavn89nk65kljiqgjhe14gar5ie96o.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">634993843953</string>
+    <string name="google_api_key" translatable="false">AIzaSyD458MclFA7kLSPoAVYDQ7TaOoE43H_wZI</string>
+    <string name="google_app_id" translatable="false">1:634993843953:android:a749056a1d9a804da8d350</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD458MclFA7kLSPoAVYDQ7TaOoE43H_wZI</string>
+    <string name="google_storage_bucket" translatable="false">meubitcoin-9c380.appspot.com</string>
+    <string name="project_id" translatable="false">meubitcoin-9c380</string>
+</resources>

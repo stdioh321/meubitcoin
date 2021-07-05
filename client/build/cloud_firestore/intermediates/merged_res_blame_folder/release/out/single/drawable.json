@@ -1,0 +1,74 @@
+[
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_disabled.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_icon_disabled.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_dark_focused.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_icon_dark_focused.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/notification_bg.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/drawable/notification_bg.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_text_light.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_text_light.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_dark_normal.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_icon_dark_normal.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_light_focused.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_icon_light_focused.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_text_dark.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_text_dark.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_light_normal.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_icon_light_normal.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/notification_icon_background.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/drawable/notification_icon_background.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_text_light_focused.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_text_light_focused.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_text_light_normal.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_text_light_normal.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/notification_tile_bg.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/drawable/notification_tile_bg.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/notification_bg_low.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_text_dark_focused.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_text_dark_focused.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_text_disabled.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_text_disabled.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_dark.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_icon_dark.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_light.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_icon_light.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/drawable/common_google_signin_btn_text_dark_normal.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/drawable/common_google_signin_btn_text_dark_normal.xml"
+    }
+]

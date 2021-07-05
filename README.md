@@ -7,10 +7,10 @@ App that list the coins from **mercadobitcoin** and show your details, using the
 * [Android SDK](https://developer.android.com/studio#downloads)
 * [Chrome Browser](https://www.google.com/intl/en-US/chrome/)
 
-# Setup
+# Setup Client
 ```shell
 git clone https://github.com/stdioh321/meubitcoin.git
-cd meubitcoin
+cd meubitcoin/client
 flutter pub get
 ```
 

@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/sqflite/intermediates/res/merged/release/layout-v21/notification_action_tombstone.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/sqflite/intermediates/res/merged/release/layout-v21/notification_template_icon_group.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/layout-v21/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/sqflite/intermediates/res/merged/release/layout-v21/notification_template_custom_big.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/sqflite/intermediates/res/merged/release/layout-v21/notification_action.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/d481b4719f34ec119768e958e701eaf6/core-1.1.0/res/layout-v21/notification_action.xml"
+    }
+]

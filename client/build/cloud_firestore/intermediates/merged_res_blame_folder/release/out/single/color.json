@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/color/common_google_signin_btn_tint.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/color/common_google_signin_btn_tint.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/color/common_google_signin_btn_text_light.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/color/common_google_signin_btn_text_light.xml"
+    },
+    {
+        "merged": "/home/hdias/git/meubitcoin/build/cloud_firestore/intermediates/res/merged/release/color/common_google_signin_btn_text_dark.xml",
+        "source": "/home/hdias/.gradle/caches/transforms-2/files-2.1/182d559fc8f5b90b025f205266ad0e02/jetified-play-services-base-17.0.0/res/color/common_google_signin_btn_text_dark.xml"
+    }
+]
