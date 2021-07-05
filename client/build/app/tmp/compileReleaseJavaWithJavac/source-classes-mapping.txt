@@ -1,4 +1,0 @@
-io/flutter/plugins/GeneratedPluginRegistrant.java
- io.flutter.plugins.GeneratedPluginRegistrant
-com/stdioh/meubitcoin/BuildConfig.java
- com.stdioh.meubitcoin.BuildConfig
