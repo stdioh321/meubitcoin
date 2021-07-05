@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:meubitcoin/repositories/fcm_repository.dart';
 import 'package:meubitcoin/services/firebase_notification_service.dart';
 import 'package:meubitcoin/views/home.dart';
 
@@ -22,10 +24,15 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
+  final FcmRepository _fcmRepository = FcmRepository();
   @override
   void initState() {
     super.initState();
+    print("Doing ASYNC");
+    doAsync();
   }
+
+  Future doAsync() async {}
 
   MaterialApp materialApp = MaterialApp(
     title: 'MeuBitcoin',

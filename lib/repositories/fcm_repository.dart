@@ -8,6 +8,25 @@ class FcmRepository {
 
   CollectionReference getCollRef() => _firebaseFirestore.collection(coll);
 
+  Future<List<QueryDocumentSnapshot>> all() async {
+    var snap = await getCollRef().get();
+    return snap.docs;
+  }
+
+  Future<List<Fcm>> getByIdDevice(String idDevice) async {
+    var snap = await getCollRef().where("id_device", isEqualTo: idDevice).get();
+    return snap.docs.map((e) => Fcm.fromSnap(e)).toList();
+  }
+
+  Future<List<Fcm>> getByCoinIdDevice(
+      {required String idDevice, required String coin}) async {
+    var snap = await getCollRef()
+        .where("id_device", isEqualTo: idDevice)
+        .where("coin", isEqualTo: coin)
+        .get();
+    return snap.docs.map((e) => Fcm.fromSnap(e)).toList();
+  }
+
   Future<List<Fcm>> getAll() async {
     var snap = await getCollRef().get();
     return snap.docs.map((e) => Fcm.fromSnap(e)).toList();
@@ -34,7 +53,7 @@ class FcmRepository {
     return Fcm.fromSnap(await docRef.get());
   }
 
-  Future<bool> remove(String id) async {
+  Future<bool> remove(String? id) async {
     var docRef = getCollRef().doc("${id}");
     if (!(await docRef.get()).exists) return false;
     await docRef.delete();
