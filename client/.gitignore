@@ -1,6 +1,6 @@
 # CUSTOM BEGIN
-client/.vscode/
-client/sign/
+.vscode/
+sign/
 google-services.json
 
 # CUSTOM END
