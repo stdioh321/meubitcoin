@@ -3,10 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:meubitcoin/repositories/fcm_repository.dart';
 import 'package:meubitcoin/services/firebase_notification_service.dart';
+import 'package:meubitcoin/utils/util.dart';
 import 'package:meubitcoin/views/home.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+Future<bool> loadBeforeInit() async {
+  var deviceId = await Util.instance.getId();
+  Util.instance.logMe(deviceId, title: "Device ID");
   // Firebase Setup BEGIN
   await Firebase.initializeApp();
 
@@ -14,6 +16,12 @@ void main() async {
   //     FirebaseNotificaitonService.onBackgroundMessage);
   await FirebaseNotificaitonService.instance.init();
 // Firebase Setup END
+  return true;
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await loadBeforeInit();
   runApp(MyApp());
 }
 

@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -33,20 +34,24 @@ class Util {
     }
   }
 
-  MaterialColor toMaterialColor(Color c) {
-    var mapColors = {
-      50: Color.fromRGBO(136, 14, 79, .1),
-      100: Color.fromRGBO(136, 14, 79, .2),
-      200: Color.fromRGBO(136, 14, 79, .3),
-      300: Color.fromRGBO(136, 14, 79, .4),
-      400: Color.fromRGBO(136, 14, 79, .5),
-      500: Color.fromRGBO(136, 14, 79, .6),
-      600: Color.fromRGBO(136, 14, 79, .7),
-      700: Color.fromRGBO(136, 14, 79, .8),
-      800: Color.fromRGBO(136, 14, 79, .9),
-      900: Color.fromRGBO(136, 14, 79, 1),
-    };
-    return MaterialColor(c.value, mapColors);
+  MaterialColor toMaterialColor(Color color) {
+    List strengths = <double>[.05];
+    final swatch = <int, Color>{};
+    final int r = color.red, g = color.green, b = color.blue;
+
+    for (int i = 1; i < 10; i++) {
+      strengths.add(0.1 * i);
+    }
+    strengths.forEach((strength) {
+      final double ds = 0.5 - strength;
+      swatch[(strength * 1000).round()] = Color.fromRGBO(
+        r + ((ds < 0 ? r : (255 - r)) * ds).round(),
+        g + ((ds < 0 ? g : (255 - g)) * ds).round(),
+        b + ((ds < 0 ? b : (255 - b)) * ds).round(),
+        1,
+      );
+    });
+    return MaterialColor(color.value, swatch);
   }
 
   void removeFocus([BuildContext? context]) {
@@ -70,5 +75,23 @@ class Util {
             fit: BoxFit.contain, width: widthPlaceholder ?? 24);
       },
     );
+  }
+
+  Future<String> getId() async {
+    var deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      // import 'dart:io'
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      return iosDeviceInfo.identifierForVendor; // unique ID on iOS
+    } else {
+      var androidDeviceInfo = await deviceInfo.androidInfo;
+      return androidDeviceInfo.androidId; // unique ID on Android
+    }
+  }
+
+  void logMe(dynamic text, {String title: "LogMe"}) {
+    print("${title.toString().padRight(100, '=')}");
+    print(text);
+    print("".padRight(100, "="));
   }
 }

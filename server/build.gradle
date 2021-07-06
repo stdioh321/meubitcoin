@@ -1,0 +1,44 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.stdioh.meubitcoin'
+version = '0.0.1'
+sourceCompatibility = '11'
+bootJar {
+//	archiveFileName = "server_${version}.${archiveExtension.get()}"
+	archiveName = "server_${version}.${archiveExtension.get()}"
+}
+
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	//	LOMBOK BEGIN
+	compileOnly 'org.projectlombok:lombok:1.18.20'
+	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+	testCompileOnly 'org.projectlombok:lombok:1.18.20'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+	// https://mvnrepository.com/artifact/com.github.peichhorn/lombok-pg
+	implementation group: 'com.github.peichhorn', name: 'lombok-pg', version: '0.11.3'
+	annotationProcessor group: 'com.github.peichhorn', name: 'lombok-pg', version: '0.11.3'
+
+	//	LOMBOK END
+
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3'
+	// https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
+	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.0.0'
+
+}
+
+test {
+	useJUnitPlatform()
+}
