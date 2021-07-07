@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -24,11 +25,22 @@ public class NotificationTask {
     @Autowired
     private TickerRepository tickerRepository;
 
+    private RestTemplate restTemplate = new RestTemplate();
 
     HashMap<String, LocalDateTime> sentMessages = new HashMap();
     final long secondsAfterLastMessage = 300;
     private static final Logger logger = LoggerFactory.getLogger(NotificationTask.class);
 
+    @Scheduled(fixedRate = 5000)
+    public  void keepHerokuAlive(){
+        try {
+            String url = "https://meubitcoin-server.herokuapp.com";
+            var ok = restTemplate.getForObject(url, String.class);
+
+        }catch (Exception ex){
+
+        }
+    }
     @Scheduled(fixedRate = 5000)
     public void sendNotifications() {
         try {
