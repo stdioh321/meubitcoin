@@ -1,7 +1,6 @@
 package com.stdioh.meubitcoin.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Singleton;
 
 public class Util {
     private static Util instance;

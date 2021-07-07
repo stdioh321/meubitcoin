@@ -9,12 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -30,7 +26,7 @@ public class NotificationTask {
 
 
     HashMap<String, LocalDateTime> sentMessages = new HashMap();
-    final long secondsAfterLastMessage = 60;
+    final long secondsAfterLastMessage = 300;
     private static final Logger logger = LoggerFactory.getLogger(NotificationTask.class);
 
     @Scheduled(fixedRate = 5000)
@@ -47,7 +43,7 @@ public class NotificationTask {
                     for (var fcm : fcms) {
                         if (fcm.isAbove() == true && Double.parseDouble(currentTicker.getBuy()) >= fcm.getPrice()) {
 
-                            String titulo = String.format("A moeda %s subiu", coin);
+                            String titulo = String.format("A moeda %s subiu para R$ %s", coin,currentTicker.getBuy());
                             String corpo = String.format("A %s está acima de R$ %s", coin, String.valueOf(fcm.getPrice()));
                             String image = "https://image.flaticon.com/icons/png/512/2097/2097160.png";
                             Note note = new Note(titulo, corpo, new HashMap<>(), image);
@@ -58,7 +54,7 @@ public class NotificationTask {
 
 
                         } else if (fcm.isAbove() == false && Double.parseDouble(currentTicker.getBuy()) < fcm.getPrice()) {
-                            String titulo = String.format("A moeda %s desceu", coin);
+                            String titulo = String.format("A moeda %s desceu para R$ %s", coin,currentTicker.getBuy());
                             String corpo = String.format("A %s está abaixo de R$ %s", coin, String.valueOf(fcm.getPrice()));
                             String image = "https://image.flaticon.com/icons/png/512/2097/2097160.png";
                             Note note = new Note(titulo, corpo, new HashMap<>(), image);
