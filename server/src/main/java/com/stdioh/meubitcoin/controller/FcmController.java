@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/fcm")
@@ -17,6 +18,7 @@ public class FcmController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity getAll(@RequestParam(required = false) String idDevice, @RequestParam(required = false) String coin) {
+
         if (idDevice != null && coin != null)
             return ResponseEntity.ok(fcmRepository.findByIdDeviceAndCoinIgnoreCase(idDevice, coin));
         return ResponseEntity.ok(fcmRepository.findAll());
@@ -31,7 +33,7 @@ public class FcmController {
     @DeleteMapping("/{id}")
     ResponseEntity delete(@PathVariable("id") String id) {
         var fcm = fcmRepository.findById(id);
-        if(fcm.isEmpty()) return ResponseEntity.notFound().build();
+        if (fcm.isEmpty()) return ResponseEntity.notFound().build();
         fcmRepository.deleteById(id);
         return ResponseEntity.ok(fcm.get());
     }
