@@ -94,4 +94,11 @@ class Util {
     print(text);
     print("".padRight(100, "="));
   }
+
+  ScaffoldFeatureController defaultSnackBar(BuildContext context, String text,
+      {SnackBar? snackBar: null}) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      snackBar == null ? SnackBar(content: Text(text)) : snackBar,
+    );
+  }
 }

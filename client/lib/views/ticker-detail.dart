@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,20 +24,20 @@ class TickerDetail extends StatefulWidget {
 }
 
 class _TickerDetailState extends State<TickerDetail> {
-  Ticker? ticker = null;
   final _formAlertaCtrl = GlobalKey<FormState>();
   Status status = Status.none;
   Status statusAddAlert = Status.none;
   Status statusRemoveAlert = Status.none;
 
   final f = DateFormat('dd/MM/yyyy HH:mm:ss');
-  Timer? timer = null;
+  Timer? timer;
   TextEditingController _textConversorController = TextEditingController()
     ..text = "0.0000";
   TextEditingController _txtPriceAlert = TextEditingController()
     ..text = "0.0000";
 
   String idDevice = FirebaseNotificaitonService.instance.token;
+  Ticker? ticker = null;
   List<Fcm> fcms = [];
   Set<String?> fcmsRemoved = Set();
 
@@ -46,7 +45,7 @@ class _TickerDetailState extends State<TickerDetail> {
 
   Map alert = {};
 
-  final FcmFirebaseRepository _fcmFbRepository = FcmFirebaseRepository();
+  // final FcmFirebaseRepository _fcmFbRepository = FcmFirebaseRepository();
   final FcmRepository _fcmRepository = FcmRepository();
 
   @override
@@ -67,7 +66,7 @@ class _TickerDetailState extends State<TickerDetail> {
     super.dispose();
   }
 
-  Future loadTicker() async {
+  Future _loadTicker() async {
     ticker = (await Api.instance.getTicker(widget.pair)).first;
   }
 
@@ -76,12 +75,9 @@ class _TickerDetailState extends State<TickerDetail> {
       if (status == Status.loading) return;
       status = Status.loading;
       setState(() {});
-      await loadTicker();
-      try {
-        fcms = await _fcmRepository.getByCoinIdDevice(
-            idDevice: idDevice, coin: widget.pair);
-      } catch (e) {}
-      _execTimer();
+      await _loadTicker();
+      await _loadFcms();
+      _startTimer();
       status = Status.ok;
       setState(() {});
     } catch (e) {
@@ -90,11 +86,16 @@ class _TickerDetailState extends State<TickerDetail> {
     }
   }
 
-  void _execTimer() {
+  Future<void> _loadFcms() async {
+    fcms = await _fcmRepository.getByCoinIdDevice(
+        idDevice: idDevice, coin: widget.pair);
+  }
+
+  void _startTimer() {
     if (timer == null)
       timer = Timer.periodic(Duration(seconds: 5), (timer) async {
         try {
-          await loadTicker();
+          await _loadTicker();
           setState(() {});
         } catch (e) {}
       });
@@ -103,29 +104,33 @@ class _TickerDetailState extends State<TickerDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("${widget.pair.substring(3)}"),
-        actions: [
-          btAddAlert(context),
-        ],
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-          ),
-          onPressed: () {
-            if (Navigator.canPop(context))
-              Navigator.pop(context);
-            else
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Home(),
-                ),
-              );
-          },
-        ),
-      ),
+      appBar: _buildAppBar(),
       body: _buildBody(),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: Text("${widget.pair.substring(3)}"),
+      actions: [
+        btAddAlert(context),
+      ],
+      leading: IconButton(
+        icon: Icon(
+          Icons.arrow_back,
+        ),
+        onPressed: () {
+          if (Navigator.canPop(context))
+            Navigator.pop(context);
+          else
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Home(),
+              ),
+            );
+        },
+      ),
     );
   }
 
@@ -232,24 +237,19 @@ class _TickerDetailState extends State<TickerDetail> {
                                       price: double.parse(_txtPriceAlert.text),
                                       above: isAbove));
 
-                                  fcms = await _fcmRepository.getByCoinIdDevice(
-                                      idDevice: idDevice, coin: widget.pair);
+                                  await _loadFcms();
                                   statusAddAlert = Status.ok;
                                   setStateIn(() {});
                                   setState(() {});
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(
-                                              "Alerta de ${Util.instance.toReal(currFcm.price)} adicionado")));
+                                  Util.instance.defaultSnackBar(context,
+                                      "Alerta de ${Util.instance.toReal(currFcm.price)} adicionado");
                                   Navigator.of(context).pop();
                                 } catch (e) {
                                   print(e);
                                   setStateIn(() {
                                     statusAddAlert = Status.none;
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                "Não foi possivel adicionar o alerta.")));
+                                    Util.instance.defaultSnackBar(context,
+                                        "Não foi possivel adicionar o alerta");
                                   });
                                 }
                               }
@@ -289,13 +289,13 @@ class _TickerDetailState extends State<TickerDetail> {
           ),
         ),
       );
-    else
-      return Center(
-        child: Text(
-          "Algo deu errado.",
-          style: TextStyle(fontSize: 33),
-        ),
-      );
+
+    return Center(
+      child: Text(
+        "Algo deu errado.",
+        style: TextStyle(fontSize: 33),
+      ),
+    );
   }
 
   Widget _tickerInformation() {
@@ -443,68 +443,66 @@ class _TickerDetailState extends State<TickerDetail> {
             ? Icon(Icons.arrow_upward, color: Colors.green)
             : Icon(Icons.arrow_downward, color: Colors.red),
         title: Text(Util.instance.toReal(e.price)),
-        trailing: statusRemoveAlert == Status.loading &&
-                fcmsRemoved.contains(e.id)
-            ? CircularProgressIndicator()
-            : IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () async {
-                  var proceed = await showDialog<bool>(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text("Tem certeza?"),
-                        actions: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context, false);
-                            },
-                            child: Text("Não"),
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.green,
-                            ),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context, true);
-                            },
-                            child: Text("Sim"),
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red,
-                            ),
-                          ),
-                        ],
+        trailing:
+            statusRemoveAlert == Status.loading && fcmsRemoved.contains(e.id)
+                ? CircularProgressIndicator()
+                : IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () async {
+                      var proceed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text("Tem certeza?"),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context, false);
+                                },
+                                child: Text("Não"),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.green,
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context, true);
+                                },
+                                child: Text("Sim"),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.red,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       );
+                      if (proceed != true) return;
+                      try {
+                        if (statusRemoveAlert == Status.loading) return;
+                        setState(() {
+                          statusRemoveAlert = Status.loading;
+                          fcmsRemoved.add(e.id);
+                        });
+
+                        await _fcmRepository.remove(e.id ?? "");
+
+                        await _loadFcms();
+                        statusRemoveAlert = Status.ok;
+                        Util.instance.defaultSnackBar(context,
+                            "Alerta de ${Util.instance.toReal(e.price)} removido");
+                        fcmsRemoved.remove(e.id);
+                        setState(() {});
+                      } catch (err) {
+                        setState(() {
+                          statusRemoveAlert = Status.none;
+                          fcmsRemoved.remove(e.id);
+                          Util.instance.defaultSnackBar(
+                              context, "Não foi possivel remover o alerta");
+                        });
+                      }
                     },
-                  );
-                  if (proceed != true) return;
-                  try {
-                    if (statusRemoveAlert == Status.loading) return;
-                    setState(() {
-                      statusRemoveAlert = Status.loading;
-                      fcmsRemoved.add(e.id);
-                    });
-
-                    await _fcmRepository.remove(e.id ?? "");
-
-                    fcms = await _fcmRepository.getByCoinIdDevice(
-                        idDevice: idDevice, coin: widget.pair);
-                    statusRemoveAlert = Status.ok;
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                            "Alerta de ${Util.instance.toReal(e.price)} removido")));
-                    fcmsRemoved.remove(e.id);
-                    setState(() {});
-                  } catch (err) {
-                    setState(() {
-                      statusRemoveAlert = Status.none;
-                      fcmsRemoved.remove(e.id);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("Não foi possivel deletar o alerta")));
-                    });
-                  }
-                },
-              ),
+                  ),
       );
     }).cast());
 

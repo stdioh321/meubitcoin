@@ -1,5 +1,6 @@
 package com.stdioh.meubitcoin.service;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.stdioh.meubitcoin.model.Note;
 import com.stdioh.meubitcoin.repository.FcmRepository;
 import com.stdioh.meubitcoin.repository.TickerRepository;
@@ -61,38 +62,44 @@ public class NotificationTask {
                     var currentTicker = tickerRepository.get(coin);
                     coin = coin.substring(3);
                     for (var fcm : fcms) {
-                        Map currMap = new HashMap() {{
-                            put("idDevice", fcm.getIdDevice());
-                            put("coin", fcm.getCoin());
-                        }};
+                        try {
 
-                        if (!canSend(currMap)) continue;
+                            Map currMap = new HashMap() {{
+                                put("idDevice", fcm.getIdDevice());
+                                put("coin", fcm.getCoin());
+                            }};
 
-                        if (fcm.isAbove() == true && Double.parseDouble(currentTicker.getBuy()) >= fcm.getPrice()) {
+                            if (!canSend(currMap)) continue;
 
-
-                            System.out.println(String.format("Acima: %s, Token %s", fcm.getPrice(), fcm.getIdDevice()));
-                            String titulo = String.format("A moeda %s subiu para R$ %s", coin, currentTicker.getBuy());
-                            String corpo = String.format("A %s está acima de R$ %s", coin, String.valueOf(fcm.getPrice()));
-                            String image = "https://image.flaticon.com/icons/png/512/2097/2097160.png";
-                            Note note = new Note(titulo, corpo, new HashMap<>(), image);
-                            firebasePushNotificationService.sendNotificationWithToken(note, fcm.getIdDevice());
-                            sentMessages.put(currMap, LocalDateTime.now());
+                            if (fcm.isAbove() == true && Double.parseDouble(currentTicker.getBuy()) >= fcm.getPrice()) {
 
 
-                        } else if (fcm.isAbove() == false && Double.parseDouble(currentTicker.getBuy()) < fcm.getPrice()) {
+                                System.out.println(String.format("Acima: %f, Token %s", fcm.getPrice(), fcm.getIdDevice()));
+                                String titulo = String.format("A moeda %s subiu para R$ %s", coin, currentTicker.getBuy());
+                                String corpo = String.format("A %s está acima de R$ %f", coin, fcm.getPrice());
+                                String image = "https://image.flaticon.com/icons/png/512/2097/2097160.png";
+                                Note note = new Note(titulo, corpo, new HashMap<>(), image);
+                                firebasePushNotificationService.sendNotificationWithToken(note, fcm.getIdDevice());
+                                sentMessages.put(currMap, LocalDateTime.now());
 
 
-                            System.out.println(String.format("Abaixo: %s, Token %s", fcm.getPrice(), fcm.getIdDevice()));
-                            String titulo = String.format("A moeda %s desceu para R$ %s", coin, currentTicker.getBuy());
-                            String corpo = String.format("A %s está abaixo de R$ %s", coin, String.valueOf(fcm.getPrice()));
-                            String image = "https://image.flaticon.com/icons/png/512/2097/2097160.png";
-                            Note note = new Note(titulo, corpo, new HashMap<>(), image);
-                            firebasePushNotificationService.sendNotificationWithToken(note, fcm.getIdDevice());
-                            sentMessages.put(currMap, LocalDateTime.now());
+                            } else if (fcm.isAbove() == false && Double.parseDouble(currentTicker.getBuy()) < fcm.getPrice()) {
 
+
+                                System.out.println(String.format("Abaixo: %f, Token %s", fcm.getPrice(), fcm.getIdDevice()));
+                                String titulo = String.format("A moeda %s desceu para R$ %s", coin, currentTicker.getBuy());
+                                String corpo = String.format("A %s está abaixo de R$ %f", coin, fcm.getPrice());
+                                String image = "https://image.flaticon.com/icons/png/512/2097/2097160.png";
+                                Note note = new Note(titulo, corpo, new HashMap<>(), image);
+                                firebasePushNotificationService.sendNotificationWithToken(note, fcm.getIdDevice());
+                                sentMessages.put(currMap, LocalDateTime.now());
+
+                            }
+                        }catch (FirebaseMessagingException fbmEx){
+                            if(fbmEx.getMessagingErrorCode().name() == "UNREGISTERED") fcmRepository.delete(fcm);
                         }
                     }
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -103,7 +110,7 @@ public class NotificationTask {
         }
     }
 
-    private boolean canSend(Map<String,String> fcm) {
+    private boolean canSend(Map<String, String> fcm) {
         if (sentMessages.containsKey(fcm)) {
             var lastTimeSent = sentMessages.get(fcm);
             return lastTimeSent.plusSeconds(secondsAfterLastMessage).isBefore(LocalDateTime.now());

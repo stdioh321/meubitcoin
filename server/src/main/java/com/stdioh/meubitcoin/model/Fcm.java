@@ -50,7 +50,7 @@ public class Fcm {
 
     @NotNull
     @NonNull
-    private double price;
+    private Double price;
 
 
 }

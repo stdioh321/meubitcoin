@@ -10,7 +10,6 @@ import 'package:meubitcoin/models/Coin.dart';
 import 'package:meubitcoin/utils/api.dart';
 import 'package:meubitcoin/utils/loading.dart';
 import 'package:meubitcoin/views/ticker-detail.dart';
-import 'package:meubitcoin/views/tmp.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -52,16 +51,7 @@ class _HomeState extends State<Home> {
 
   void init() async {
     status = Status.none;
-    loadTickers().then((value) {
-      timer = Timer.periodic(Duration(seconds: time), (timer) async {
-        try {
-          if (status == Status.ok && _floatingSearchBarController.isClosed) {
-            await getTickers();
-            setState(() {});
-          }
-        } catch (e) {}
-      });
-    });
+    loadTickers();
   }
 
   Future getTickers() async {
@@ -75,12 +65,26 @@ class _HomeState extends State<Home> {
       status = Status.loading;
       setState(() {});
       await getTickers();
+      _startTimer();
+
       status = Status.ok;
       setState(() {});
     } catch (e) {
       status = Status.error;
       setState(() {});
     }
+  }
+
+  void _startTimer() {
+    if (timer == null)
+      timer = Timer.periodic(Duration(seconds: time), (timer) async {
+        try {
+          if (status == Status.ok && _floatingSearchBarController.isClosed) {
+            await getTickers();
+            setState(() {});
+          }
+        } catch (e) {}
+      });
   }
 
   @override
@@ -93,26 +97,17 @@ class _HomeState extends State<Home> {
         ),
         controller: _floatingSearchBarController,
         clearQueryOnClose: true,
-        hint: "BTC",
         color: Theme.of(context).accentColor,
         colorOnScroll: Theme.of(context).accentColor,
         iconColor: Colors.white,
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(
+          color: Colors.white.withAlpha(60),
+        ),
+        hint: "BTC",
         titleStyle: TextStyle(color: Colors.white),
         debounceDelay: Duration(milliseconds: 300),
-        elevation: 0,
-        onQueryChanged: (query) {
-          setState(() {
-            tickers = _tickers
-                .where((e) =>
-                    e.pair
-                        .trim()
-                        .toLowerCase()
-                        .indexOf((query).trim().toLowerCase()) >
-                    -1)
-                .toList();
-          });
-        },
+        elevation: 5,
+        onQueryChanged: _onSearch,
         body: Container(
           padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
           child: _buildBody(),
@@ -120,6 +115,19 @@ class _HomeState extends State<Home> {
         hideKeyboardOnDownScroll: true,
       ),
     );
+  }
+
+  _onSearch(String query) {
+    setState(() {
+      tickers = _tickers
+          .where((e) =>
+              e.pair
+                  .trim()
+                  .toLowerCase()
+                  .indexOf((query).trim().toLowerCase()) >
+              -1)
+          .toList();
+    });
   }
 
   // FloatingSearchAppBar _buildAppBar() {
@@ -175,10 +183,13 @@ class _HomeState extends State<Home> {
               children: [
                 Text("Compra: " + Util.instance.toReal(currTicker.buy)),
                 Text("Venda: " + Util.instance.toReal(currTicker.sell)),
-                Text("Último: " + Util.instance.toReal(currTicker.last)),
+                // Text("Último: " + Util.instance.toReal(currTicker.last)),
               ],
             ),
-            title: Text("${currTicker.pair}".substring(3)),
+            title: Text(
+              "${currTicker.pair}".substring(3),
+              style: TextStyle(fontSize: 22),
+            ),
             leading: Wrap(
               children: [
                 SizedBox(
@@ -201,9 +212,7 @@ class _HomeState extends State<Home> {
               alignment: WrapAlignment.start,
               children: [
                 tmp,
-                Icon(
-                  Icons.keyboard_arrow_right,
-                ),
+                Icon(Icons.keyboard_arrow_right),
               ],
             ),
             onTap: () async {
