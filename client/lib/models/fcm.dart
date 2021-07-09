@@ -17,7 +17,7 @@ class Fcm {
     required this.coin,
     required this.price,
     this.above: true,
-    required this.date,
+    this.date,
   });
 
   String? id;
@@ -25,7 +25,7 @@ class Fcm {
   String coin;
   double price;
   bool above;
-  Timestamp date;
+  int? date;
 
   factory Fcm.fromJson(Map<String, dynamic> json) => Fcm(
         id: json["id"],

@@ -1,1 +1,1 @@
-web: java -Xmx512m -jar $JAR_OPTS build/libs/server_*.jar $JAVA_OPTS --server.port=$PORT
+web: java -Xmx256m -jar $JAR_OPTS build/libs/server_*.jar $JAVA_OPTS --server.port=$PORT

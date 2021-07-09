@@ -1,4 +1,5 @@
 application-prod.properties
+application.properties
 serviceAccountKey.json
 
 HELP.md

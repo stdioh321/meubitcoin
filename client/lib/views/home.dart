@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/route_manager.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:meubitcoin/main.dart';
-import 'package:meubitcoin/models/fcm.dart';
 import 'package:meubitcoin/repositories/fcm_repository.dart';
-import 'package:meubitcoin/services/firebase_notification_service.dart';
 import 'package:meubitcoin/utils/util.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +10,7 @@ import 'package:meubitcoin/models/Coin.dart';
 import 'package:meubitcoin/utils/api.dart';
 import 'package:meubitcoin/utils/loading.dart';
 import 'package:meubitcoin/views/ticker-detail.dart';
+import 'package:meubitcoin/views/tmp.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -22,6 +20,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  FcmRepository fcmRepository = FcmRepository();
+
   List<Ticker> _tickers = [];
   List<Ticker> tickers = [];
   Status status = Status.none;
@@ -35,8 +35,6 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     init();
-
-    // AFTER BRANCH tmp
   }
 
   @override
@@ -210,13 +208,7 @@ class _HomeState extends State<Home> {
             ),
             onTap: () async {
               Util.instance.removeFocus(context);
-
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => TickerDetail(
-                            pair: currTicker.pair,
-                          )));
+              await Get.to(TickerDetail(pair: currTicker.pair));
             },
           );
         },

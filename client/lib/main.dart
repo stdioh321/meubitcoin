@@ -1,22 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:meubitcoin/repositories/fcm_repository.dart';
+import 'package:get/route_manager.dart';
+import 'package:meubitcoin/controllers/tmp_controller.dart';
+import 'package:meubitcoin/repositories/fcm_firebase_repository.dart';
 import 'package:meubitcoin/services/firebase_notification_service.dart';
 import 'package:meubitcoin/utils/util.dart';
 import 'package:meubitcoin/views/home.dart';
+import 'package:get/instance_manager.dart';
 
 Future<bool> loadBeforeInit() async {
   var deviceId = await Util.instance.getId();
-  Util.instance.logMe(deviceId, title: "Device ID");
+
+  loadControllers();
+
   // Firebase Setup BEGIN
   await Firebase.initializeApp();
 
   // FirebaseMessaging.onBackgroundMessage(
   //     FirebaseNotificaitonService.onBackgroundMessage);
   await FirebaseNotificaitonService.instance.init();
+  Util.instance.logMe(deviceId, title: "Device ID");
+  Util.instance
+      .logMe(FirebaseNotificaitonService.instance.token, title: "FCM Token");
 // Firebase Setup END
   return true;
+}
+
+void loadControllers() {
+  // Get.put(TmpController());
 }
 
 void main() async {
@@ -32,7 +44,7 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  final FcmRepository _fcmRepository = FcmRepository();
+  final FcmFirebaseRepository _fcmRepository = FcmFirebaseRepository();
   @override
   void initState() {
     super.initState();
@@ -42,7 +54,7 @@ class MyAppState extends State<MyApp> {
 
   Future doAsync() async {}
 
-  MaterialApp materialApp = MaterialApp(
+  GetMaterialApp materialApp = GetMaterialApp(
     title: 'MeuBitcoin',
     debugShowCheckedModeBanner: false,
     theme: ThemeData(

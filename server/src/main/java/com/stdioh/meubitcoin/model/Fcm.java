@@ -1,37 +1,57 @@
 package com.stdioh.meubitcoin.model;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.cloud.Timestamp;
-import com.google.cloud.firestore.DocumentSnapshot;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.stdioh.meubitcoin.serializer.LocalDateTimeToTimestamp;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
-
+@Entity
+@Table(name = "fcm")
+@NoArgsConstructor
+@ToString
 @Data
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class Fcm {
-    @JsonIgnore
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String id;
+
+    @NotNull
     @NonNull
-    private boolean above;
+    private boolean above = true;
+
     @NonNull
+    @NotNull
     private String coin;
+
+
+    @JsonSerialize(using = LocalDateTimeToTimestamp.Serializer.class)
+    @JsonDeserialize(using = LocalDateTimeToTimestamp.Deserializer.class)
+    @CreationTimestamp
+    private LocalDateTime date;
+
+    @NotNull
     @NonNull
-    private Timestamp date;
-    @NonNull
+    @Column(name = "id_device")
+    @JsonProperty("id_device")
     private String idDevice;
+
+    @NotNull
     @NonNull
     private double price;
 
-    public Fcm(DocumentSnapshot snap){
-        this.id = snap.getId();
-        this.above = (boolean) snap.get("above");
-        this.coin = (String) snap.get("coin");
-        this.date = (Timestamp) snap.get("date");
-        this.idDevice = (String) snap.get("id_device");
-        this.price = (double) snap.get("price");
-    }
+
 }
+

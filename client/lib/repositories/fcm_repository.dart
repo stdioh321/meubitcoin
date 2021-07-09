@@ -1,62 +1,46 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:http/http.dart';
+import 'dart:convert';
+
 import 'package:meubitcoin/models/fcm.dart';
+import 'package:http/http.dart' as http;
 
 class FcmRepository {
-  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-  String coll = "fcm";
+  String _urlBase = "https://meubitcoin-server.herokuapp.com/fcm";
+  // String _urlBase = "http://192.168.0.16:8080/fcm";
 
-  CollectionReference getCollRef() => _firebaseFirestore.collection(coll);
-
-  Future<List<QueryDocumentSnapshot>> all() async {
-    var snap = await getCollRef().get();
-    return snap.docs;
+  Future<List<Fcm>> getAll() async {
+    var response = await http.get(Uri.parse(_urlBase),
+        headers: {"Content-Type": "application/json"});
+    if (response.statusCode != 200) throw Exception("Not ok");
+    return (jsonDecode(response.body) as List)
+        .map((e) => Fcm.fromJson(e))
+        .toList();
   }
 
-  Future<List<Fcm>> getByIdDevice(String idDevice) async {
-    var snap = await getCollRef().where("id_device", isEqualTo: idDevice).get();
-    return snap.docs.map((e) => Fcm.fromSnap(e)).toList();
+  Future<Fcm> add(Fcm fcm) async {
+    var json = fcmToJson(fcm);
+
+    var response = await http.post(Uri.parse(_urlBase),
+        body: json, headers: {"Content-Type": "application/json"});
+
+    if (response.statusCode != 200) throw Exception(response.body);
+    return Fcm.fromJson(jsonDecode(response.body));
   }
 
   Future<List<Fcm>> getByCoinIdDevice(
       {required String idDevice, required String coin}) async {
-    var snap = await getCollRef()
-        .where("id_device", isEqualTo: idDevice)
-        .where("coin", isEqualTo: coin)
-        .get();
-    return snap.docs.map((e) => Fcm.fromSnap(e)).toList();
+    var query =
+        Uri(queryParameters: {"idDevice": idDevice, "coin": coin}).query;
+    var response = await http.get(Uri.parse("${_urlBase}?$query"),
+        headers: {"Content-Type": "application/json"});
+    if (response.statusCode != 200) throw Exception("Not ok");
+    return (jsonDecode(response.body) as List)
+        .map((e) => Fcm.fromJson(e))
+        .toList();
   }
 
-  Future<List<Fcm>> getAll() async {
-    var snap = await getCollRef().get();
-    return snap.docs.map((e) => Fcm.fromSnap(e)).toList();
-  }
-
-  Future<Fcm> get(String id) async {
-    var snap = await getCollRef().doc("${id}").get();
-    return Fcm.fromSnap(snap);
-  }
-
-  Future<Fcm> add(Fcm fcm) async {
-    var json = fcm.toJson();
-    json.remove("id");
-    var snap = await getCollRef().add(json);
-    return Fcm.fromSnap(await snap.get());
-  }
-
-  Future<Fcm> put({required Fcm fcm, required String id}) async {
-    var docRef = getCollRef().doc("${id}");
-    if (!(await docRef.get()).exists) throw Exception("Id not found.");
-    var json = fcm.toJson();
-    json.remove("id");
-    await docRef.set(json);
-    return Fcm.fromSnap(await docRef.get());
-  }
-
-  Future<bool> remove(String? id) async {
-    var docRef = getCollRef().doc("${id}");
-    if (!(await docRef.get()).exists) return false;
-    await docRef.delete();
-    return true;
+  Future<Fcm> remove(String id) async {
+    var response = await http.delete(Uri.parse("${_urlBase}/$id"));
+    if (response.statusCode != 200) throw Exception("Not ok");
+    return Fcm.fromJson(jsonDecode(response.body));
   }
 }
