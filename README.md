@@ -1,11 +1,10 @@
 # MeuBitcoin
-App that list the coins from **mercadobitcoin** and show your details, using the api from https://mercadobitcoin.com.br/
+App that list the coins from **mercadobitcoin**,show your details and allows the user to setup alerts, using the api from https://mercadobitcoin.com.br/
 
 
-# Requirements
+# Client Requirements
 * [Flutter >= 2](https://flutter.dev/docs/get-started/install)
 * [Android SDK](https://developer.android.com/studio#downloads)
-* [Chrome Browser](https://www.google.com/intl/en-US/chrome/)
 
 # Setup Client
 ```shell
@@ -14,27 +13,27 @@ cd meubitcoin/client
 flutter pub get
 ```
 
-# Run on Chrome
-```shell
-flutter run -d chrome --no-sound-null-safety
-```
-**Your chrome browser will open at localhost in some random port.**
-Home | Home Pesquisa | Detalhes |
---- | --- | --- |
-![Home](./docs/screenshot_02.png) | ![Home Pesquisa](./docs/screenshot_03.png) | ![Detalhes](./docs/screenshot_04.png) |
-
-
 # Run on Android
 
-Plug your android device to the computer with the debub mode enabled.
+Plug your android device to the computer with the debug mode enabled.
 
-![Flutter Devices](./docs/screenshot_01.png)
+![Flutter Devices](./docs/screen_06.jpg)
 ```shell
 # Get your android device id
 flutter devices
-flutter run -d [ANDROID_DEVICE_ID] --no-sound-null-safety 
+flutter run -d [ANDROID_DEVICE_ID]
 
 ```
+Home | Home Search | Details |
+--- | --- | --- |
+![Home](./docs/screen_01.jpg) | ![Home Search](./docs/screen_02.jpg) | ![Detalhes](./docs/screen_03.jpg) |
+
+Home | Home Search | 
+--- | --- | 
+![Add Alert](./docs/screen_04.jpg) | ![List Alert](./docs/screen_05.jpg) |
+
+
+
 
 # References
 * [Mercado Bitcoin](https://www.mercadobitcoin.com.br/)
