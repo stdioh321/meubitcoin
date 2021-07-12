@@ -101,4 +101,8 @@ class Util {
       snackBar == null ? SnackBar(content: Text(text)) : snackBar,
     );
   }
+
+  DateFormat defaultDateFormat() {
+    return DateFormat('dd-MM-yyyy HH:mm:ss');
+  }
 }

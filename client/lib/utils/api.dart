@@ -69,9 +69,12 @@ class Api {
     "BRLZRX"
   ];
 
-  Future<List<Ticker>> getTicker([String? coin = null]) async {
+  Future<List<Ticker>> getTickers([String? coin = null]) async {
     String urlBase = "https://cdn.mercadobitcoin.com.br/api";
     List<String> tmpCoins = coins.toList();
+    if (coin != null && coin.toLowerCase().startsWith("brl") == false) {
+      coin = "BRL" + coin;
+    }
     if (coin != null)
       tmpCoins = tmpCoins
           .where((e) => "$coin".toLowerCase() == e.toLowerCase())
@@ -80,7 +83,10 @@ class Api {
         await get(Uri.parse("$urlBase/tickers?pairs=" + tmpCoins.join(",")));
     if (resp.statusCode != 200) throw Exception("Something went wrong.");
 
-    return coinFromJson(resp.body).ticker;
+    return coinFromJson(resp.body).ticker.map((e) {
+      e.pair = e.pair.substring(3);
+      return e;
+    }).toList();
   }
 
   Future<List<Trade>> getTrade(String coin) async {

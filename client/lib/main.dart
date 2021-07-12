@@ -1,26 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/route_manager.dart';
-import 'package:meubitcoin/controllers/tmp_controller.dart';
 import 'package:meubitcoin/repositories/fcm_firebase_repository.dart';
 import 'package:meubitcoin/services/firebase_notification_service.dart';
 import 'package:meubitcoin/utils/util.dart';
 import 'package:meubitcoin/views/home.dart';
-import 'package:get/instance_manager.dart';
+import 'package:meubitcoin/views/ticker-detail.dart';
+
+final GlobalKey<NavigatorState> navigatorKey =
+    GlobalKey(debugLabel: "Main Navigator");
 
 Future<bool> loadBeforeInit() async {
-  var deviceId = await Util.instance.getId();
-
-  loadControllers();
-
   // Firebase Setup BEGIN
   await Firebase.initializeApp();
-
-  // FirebaseMessaging.onBackgroundMessage(
-  //     FirebaseNotificaitonService.onBackgroundMessage);
   await FirebaseNotificaitonService.instance.init();
-  Util.instance.logMe(deviceId, title: "Device ID");
+  loadControllers();
+
+  Util.instance.logMe(await Util.instance.getId(), title: "Device ID");
   Util.instance
       .logMe(FirebaseNotificaitonService.instance.token, title: "FCM Token");
 // Firebase Setup END
@@ -45,25 +43,22 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   final FcmFirebaseRepository _fcmRepository = FcmFirebaseRepository();
+
   @override
   void initState() {
     super.initState();
-    print("Doing ASYNC");
-    doAsync();
   }
 
-  Future doAsync() async {}
-
-  GetMaterialApp materialApp = GetMaterialApp(
-    title: 'MeuBitcoin',
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      primarySwatch: Colors.green,
-    ),
-    home: Home(),
-  );
   @override
   Widget build(BuildContext context) {
-    return materialApp;
+    return GetMaterialApp(
+      title: "MeuBitcoin",
+      navigatorKey: navigatorKey,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          primarySwatch:
+              Util.instance.toMaterialColor(Colors.amberAccent.shade700)),
+      home: Home(),
+    );
   }
 }

@@ -1,15 +1,12 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
-import 'package:meubitcoin/models/Coin.dart';
-import 'package:meubitcoin/models/fcm.dart';
-import 'package:meubitcoin/repositories/fcm_firebase_repository.dart';
-import 'package:meubitcoin/repositories/fcm_repository.dart';
+import 'package:get/get.dart';
+import 'package:meubitcoin/controllers/ticker_detail_controller.dart';
 import 'package:meubitcoin/services/firebase_notification_service.dart';
-import 'package:meubitcoin/utils/api.dart';
 import 'package:meubitcoin/utils/loading.dart';
 import 'package:meubitcoin/utils/util.dart';
 import 'package:meubitcoin/views/home.dart';
@@ -24,35 +21,24 @@ class TickerDetail extends StatefulWidget {
 }
 
 class _TickerDetailState extends State<TickerDetail> {
-  final _formAlertaCtrl = GlobalKey<FormState>();
-  Status status = Status.none;
-  Status statusAddAlert = Status.none;
-  Status statusRemoveAlert = Status.none;
+  String tag = Random().nextInt(9999999).toString();
 
-  final f = DateFormat('dd/MM/yyyy HH:mm:ss');
-  Timer? timer;
-  TextEditingController _textConversorController = TextEditingController()
+  late TickerDetailController tDCtrl;
+  final _formAlertaCtrl = GlobalKey<FormState>();
+
+  TextEditingController _txtConversorController = TextEditingController()
     ..text = "0.0000";
   TextEditingController _txtPriceAlert = TextEditingController()
     ..text = "0.0000";
-
-  String idDevice = FirebaseNotificaitonService.instance.token;
-  Ticker? ticker = null;
-  List<Fcm> fcms = [];
-  Set<String?> fcmsRemoved = Set();
-
-  bool isAbove = true;
-
-  Map alert = {};
-
-  // final FcmFirebaseRepository _fcmFbRepository = FcmFirebaseRepository();
-  final FcmRepository _fcmRepository = FcmRepository();
-
+  _TickerDetailState() {
+    tDCtrl = Get.put(TickerDetailController(), tag: tag);
+  }
   @override
   void initState() {
     // TODO: implement initState
-
-    loadResources();
+    tDCtrl
+      ..init(widget.pair, FirebaseNotificaitonService.instance.token)
+      ..loadResources();
   }
 
   Future init() async {}
@@ -61,60 +47,31 @@ class _TickerDetailState extends State<TickerDetail> {
   void dispose() {
     // TODO: implement dispose
     try {
-      timer?.cancel();
+      tDCtrl.timer?.cancel();
     } catch (e) {}
     super.dispose();
-  }
-
-  Future _loadTicker() async {
-    ticker = (await Api.instance.getTicker(widget.pair)).first;
-  }
-
-  Future loadResources() async {
-    try {
-      if (status == Status.loading) return;
-      status = Status.loading;
-      setState(() {});
-      await _loadTicker();
-      await _loadFcms();
-      _startTimer();
-      status = Status.ok;
-      setState(() {});
-    } catch (e) {
-      status = Status.error;
-      setState(() {});
-    }
-  }
-
-  Future<void> _loadFcms() async {
-    fcms = await _fcmRepository.getByCoinIdDevice(
-        idDevice: idDevice, coin: widget.pair);
-  }
-
-  void _startTimer() {
-    if (timer == null)
-      timer = Timer.periodic(Duration(seconds: 5), (timer) async {
-        try {
-          await _loadTicker();
-          setState(() {});
-        } catch (e) {}
-      });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: GetBuilder<TickerDetailController>(
+        tag: tag,
+        builder: (controller) => btAddAlert(context),
+      ),
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.miniCenterFloat,
       appBar: _buildAppBar(),
-      body: _buildBody(),
+      body: GetBuilder<TickerDetailController>(
+        tag: tag,
+        builder: (controller) => _buildBody(),
+      ),
     );
   }
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: Text("${widget.pair.substring(3)}"),
-      actions: [
-        btAddAlert(context),
-      ],
+      title: Text("${widget.pair}"),
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back,
@@ -134,12 +91,14 @@ class _TickerDetailState extends State<TickerDetail> {
     );
   }
 
-  IconButton btAddAlert(BuildContext context) {
-    return IconButton(
+  FloatingActionButton btAddAlert(BuildContext context) {
+    return FloatingActionButton(
       onPressed: () async {
+        tDCtrl.resetAddAlertDate();
         _txtPriceAlert.text = "0.0000";
-        isAbove = true;
+
         Util.instance.removeFocus(context);
+
         await showDialog(
           context: context,
           builder: (context) {
@@ -183,6 +142,8 @@ class _TickerDetailState extends State<TickerDetail> {
                               }
                               return null;
                             },
+                            onChanged: (value) =>
+                                tDCtrl.addAlertData["price"] = value,
                           ),
                           Divider(),
                           Row(
@@ -193,11 +154,10 @@ class _TickerDetailState extends State<TickerDetail> {
                                 style: TextStyle(fontWeight: FontWeight.w900),
                               ),
                               Switch(
-                                  value: isAbove,
+                                  value: tDCtrl.addAlertData["above"],
                                   onChanged: (v) {
-                                    setStateIn(() {
-                                      isAbove = !isAbove;
-                                    });
+                                    tDCtrl.addAlertData["above"] = v;
+                                    setStateIn(() {});
                                   })
                             ],
                           )
@@ -217,40 +177,23 @@ class _TickerDetailState extends State<TickerDetail> {
                         primary: Colors.red,
                       ),
                     ),
-                    statusAddAlert == Status.loading
+                    tDCtrl.statusAddFcm == Status.loading
                         ? CircularProgressIndicator(
                             strokeWidth: 2,
                           )
                         : ElevatedButton(
                             onPressed: () async {
                               if (_formAlertaCtrl.currentState!.validate()) {
-                                try {
-                                  if (statusAddAlert == Status.loading) return;
-
-                                  setStateIn(() {
-                                    statusAddAlert = Status.loading;
-                                  });
-
-                                  var currFcm = await _fcmRepository.add(Fcm(
-                                      idDevice: idDevice,
-                                      coin: widget.pair,
-                                      price: double.parse(_txtPriceAlert.text),
-                                      above: isAbove));
-
-                                  await _loadFcms();
-                                  statusAddAlert = Status.ok;
-                                  setStateIn(() {});
-                                  setState(() {});
+                                tDCtrl.statusAddFcm = Status.loading;
+                                setStateIn(() {});
+                                if (await tDCtrl.addFcm()) {
                                   Util.instance.defaultSnackBar(context,
-                                      "Alerta de ${Util.instance.toReal(currFcm.price)} adicionado");
-                                  Navigator.of(context).pop();
-                                } catch (e) {
-                                  print(e);
-                                  setStateIn(() {
-                                    statusAddAlert = Status.none;
-                                    Util.instance.defaultSnackBar(context,
-                                        "Não foi possivel adicionar o alerta");
-                                  });
+                                      "Alerta de ${Util.instance.toReal(tDCtrl.addAlertData["price"])} adicionado");
+
+                                  Navigator.pop(context);
+                                } else {
+                                  Util.instance.defaultSnackBar(context,
+                                      "Não foi possivel adicionar o alerta");
                                 }
                               }
                             },
@@ -266,16 +209,18 @@ class _TickerDetailState extends State<TickerDetail> {
           },
         );
       },
-      icon: Icon(Icons.add_alarm),
+      child: Icon(
+        Icons.add_alarm,
+      ),
     );
   }
 
   Widget _buildBody() {
-    if (status == Status.loading || status == Status.none)
+    if (tDCtrl.status == Status.loading || tDCtrl.status == Status.none)
       return Center(
         child: CircularProgressIndicator(),
       );
-    else if (status == Status.ok)
+    else if (tDCtrl.status == Status.ok)
       return SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(15),
@@ -304,7 +249,7 @@ class _TickerDetailState extends State<TickerDetail> {
         Row(
           children: [
             Util.instance.imgOrPlaceholder(
-                "assets/images/coin_image/" + widget.pair.substring(3) + ".png",
+                "assets/images/coin_image/${tDCtrl.coin}.png",
                 50,
                 "assets/images/coin_image/placeholder.png",
                 50),
@@ -312,7 +257,7 @@ class _TickerDetailState extends State<TickerDetail> {
               width: 15,
             ),
             Text(
-              widget.pair.substring(3),
+              tDCtrl.coin!,
               style: TextStyle(fontSize: 30),
             ),
           ],
@@ -321,49 +266,51 @@ class _TickerDetailState extends State<TickerDetail> {
         Align(
           alignment: Alignment.centerRight,
           child: Text(
-            f.format(DateTime.fromMillisecondsSinceEpoch(ticker!.date * 1000)),
+            Util.instance.defaultDateFormat().format(
+                DateTime.fromMillisecondsSinceEpoch(
+                    tDCtrl.ticker!.date * 1000)),
           ),
         ),
         Divider(),
         Row(
           children: [
             Expanded(child: Text("Compra")),
-            Text(Util.instance.toReal(ticker?.buy))
+            Text(Util.instance.toReal(tDCtrl.ticker?.buy))
           ],
         ),
         Divider(),
         Row(
           children: [
             Expanded(child: Text("Venda")),
-            Text(Util.instance.toReal(ticker?.sell))
+            Text(Util.instance.toReal(tDCtrl.ticker!.sell))
           ],
         ),
         Divider(),
         Row(
           children: [
             Expanded(child: Text("Último")),
-            Text(Util.instance.toReal(ticker?.last))
+            Text(Util.instance.toReal(tDCtrl.ticker!.last))
           ],
         ),
         Divider(),
         Row(
           children: [
             Expanded(child: Text("Maior")),
-            Text(Util.instance.toReal(ticker?.high))
+            Text(Util.instance.toReal(tDCtrl.ticker!.high))
           ],
         ),
         Divider(),
         Row(
           children: [
             Expanded(child: Text("Menor")),
-            Text(Util.instance.toReal(ticker?.low))
+            Text(Util.instance.toReal(tDCtrl.ticker!.low))
           ],
         ),
         Divider(),
         Row(
           children: [
             Expanded(child: Text("Volume")),
-            Text(Util.instance.toReal(ticker?.vol))
+            Text(Util.instance.toReal(tDCtrl.ticker!.vol))
           ],
         ),
       ],
@@ -375,7 +322,7 @@ class _TickerDetailState extends State<TickerDetail> {
       child: Column(
         children: [
           TextFormField(
-            controller: _textConversorController,
+            controller: _txtConversorController,
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             onChanged: (value) {
               setState(() {});
@@ -388,14 +335,14 @@ class _TickerDetailState extends State<TickerDetail> {
               )
             ],
             decoration: InputDecoration(
-              labelText: widget.pair.substring(3),
+              labelText: tDCtrl.coin,
               prefixIcon: Icon(Icons.attach_money_outlined),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
             ),
           ),
-          (_textConversorController.text.isEmpty)
+          (_txtConversorController.text.isEmpty)
               ? SizedBox()
               : Container(
                   padding: EdgeInsets.only(top: 5),
@@ -409,7 +356,7 @@ class _TickerDetailState extends State<TickerDetail> {
                       ),
                       Text(
                         _convertCoin(
-                            _textConversorController.text, ticker!.buy),
+                            _txtConversorController.text, tDCtrl.ticker!.buy),
                         style: TextStyle(fontSize: 22),
                       )
                     ],
@@ -421,7 +368,7 @@ class _TickerDetailState extends State<TickerDetail> {
   }
 
   Widget _fcmList() {
-    if (fcms.length < 1)
+    if (tDCtrl.fcms.length < 1)
       return Column(children: [
         Divider(),
         Text("Nenhum alerta"),
@@ -436,73 +383,57 @@ class _TickerDetailState extends State<TickerDetail> {
       ),
       Divider(),
     ];
-    _fcmList.addAll(fcms.map<Widget>((e) {
+    _fcmList.addAll(tDCtrl.fcms.map<Widget>((currentFcm) {
       return ListTile(
         dense: true,
-        leading: e.above
+        leading: currentFcm.above
             ? Icon(Icons.arrow_upward, color: Colors.green)
             : Icon(Icons.arrow_downward, color: Colors.red),
-        title: Text(Util.instance.toReal(e.price)),
-        trailing:
-            statusRemoveAlert == Status.loading && fcmsRemoved.contains(e.id)
-                ? CircularProgressIndicator()
-                : IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () async {
-                      var proceed = await showDialog<bool>(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("Tem certeza?"),
-                            actions: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context, false);
-                                },
-                                child: Text("Não"),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.green,
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context, true);
-                                },
-                                child: Text("Sim"),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.red,
-                                ),
-                              ),
-                            ],
-                          );
-                        },
+        title: Text(Util.instance.toReal(currentFcm.price)),
+        trailing: tDCtrl.statusRemoveFcm == Status.loading &&
+                tDCtrl.removedFcms.contains(currentFcm.id)
+            ? CircularProgressIndicator()
+            : IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () async {
+                  var proceed = await showDialog<bool>(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text("Tem certeza?"),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context, false);
+                            },
+                            child: Text("Não"),
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.green,
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context, true);
+                            },
+                            child: Text("Sim"),
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red,
+                            ),
+                          ),
+                        ],
                       );
-                      if (proceed != true) return;
-                      try {
-                        if (statusRemoveAlert == Status.loading) return;
-                        setState(() {
-                          statusRemoveAlert = Status.loading;
-                          fcmsRemoved.add(e.id);
-                        });
-
-                        await _fcmRepository.remove(e.id ?? "");
-
-                        await _loadFcms();
-                        statusRemoveAlert = Status.ok;
-                        Util.instance.defaultSnackBar(context,
-                            "Alerta de ${Util.instance.toReal(e.price)} removido");
-                        fcmsRemoved.remove(e.id);
-                        setState(() {});
-                      } catch (err) {
-                        setState(() {
-                          statusRemoveAlert = Status.none;
-                          fcmsRemoved.remove(e.id);
-                          Util.instance.defaultSnackBar(
-                              context, "Não foi possivel remover o alerta");
-                        });
-                      }
                     },
-                  ),
+                  );
+                  if (proceed != true) return;
+                  if (await tDCtrl.removeFcm(currentFcm.id ?? "")) {
+                    Util.instance.defaultSnackBar(context,
+                        "Alerta de ${Util.instance.toReal(currentFcm.price)} removido");
+                  } else {
+                    Util.instance.defaultSnackBar(
+                        context, "Não foi possivel remover o alerta");
+                  }
+                },
+              ),
       );
     }).cast());
 

@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -34,6 +35,7 @@ public class Fcm {
 
     @NonNull
     @NotNull
+    @NotEmpty
     private String coin;
 
 
@@ -43,6 +45,7 @@ public class Fcm {
     private LocalDateTime date;
 
     @NotNull
+    @NotEmpty
     @NonNull
     @Column(name = "id_device")
     @JsonProperty("id_device")

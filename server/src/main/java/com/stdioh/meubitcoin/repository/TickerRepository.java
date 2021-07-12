@@ -14,13 +14,13 @@ import java.util.Map;
 @Repository
 public class TickerRepository {
     private final RestTemplate _restTemplate = new RestTemplate();
-    private String _url = "https://cdn.mercadobitcoin.com.br/api/tickers?pairs=";
+//    private String _url = "https://cdn.mercadobitcoin.com.br/api/tickers?pairs=";
+    private String _url = "https://www.mercadobitcoin.net/api/%s/ticker/";
 
-    public Ticker get(String pair){
-        Map<String, ArrayList<LinkedHashMap>> res = this._restTemplate.getForObject(_url+pair, Map.class);
-        var mapTicker = res.get("ticker").stream().findFirst().get();
+    public Ticker get(String coin){
+        Map<String, LinkedHashMap> res = this._restTemplate.getForObject(String.format(_url, coin) , Map.class);
+        var mapTicker = res.get("ticker");
         var mapper = new ObjectMapper();
-        mapper = mapper.registerModule(new JavaTimeModule());
         var t = mapper.convertValue(mapTicker, Ticker.class);
         return t;
     }

@@ -21,5 +21,4 @@ public class Ticker {
     private String sell;
     private String open;
     private Long date;
-    private String pair;
 }

@@ -46,7 +46,6 @@ class _HomeState extends State<Home> {
   @override
   void didUpdateWidget(covariant Home oldWidget) {
     // TODO: implement didUpdateWidget
-    print("didUpdateWidget");
   }
 
   void init() async {
@@ -55,7 +54,7 @@ class _HomeState extends State<Home> {
   }
 
   Future getTickers() async {
-    _tickers = await Api.instance.getTicker();
+    _tickers = await Api.instance.getTickers();
     tickers = _tickers.toList();
   }
 
@@ -187,7 +186,7 @@ class _HomeState extends State<Home> {
               ],
             ),
             title: Text(
-              "${currTicker.pair}".substring(3),
+              "${currTicker.pair}",
               style: TextStyle(fontSize: 22),
             ),
             leading: Wrap(
@@ -195,7 +194,7 @@ class _HomeState extends State<Home> {
                 SizedBox(
                   width: 45,
                   child: Image.asset(
-                    "assets/images/coin_image/${currTicker.pair.substring(3)}.png",
+                    "assets/images/coin_image/${currTicker.pair}.png",
                     fit: BoxFit.contain,
                     errorBuilder: (BuildContext context, Object exception,
                         StackTrace? stackTrace) {
